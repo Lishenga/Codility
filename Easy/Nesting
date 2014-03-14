@@ -1,4 +1,3 @@
-
 A string S consisting of N characters is called properly nested if:
 S is empty;
 S has the form "(U)" where U is a properly nested string;
@@ -18,48 +17,31 @@ expected worst-case space complexity is O(1) (not counting the storage required 
 
 
 Solution:
-public static void main(String[] args) throws Exception{
-	/*Code to test the function AreParanthesesBalanced*/
-	BufferedReader in=new BufferedReader(new InputStreamReader(System.in));
-	String expression;
-	System.out.println("Enter an expression:  "); // input expression from STDIN/Console
-	expression=in.readLine();
-	if(AreParanthesesBalanced(expression))
-		System.out.println("Balanced\n");
-	else
-		System.out.println("Not Balanced\n");
-}
-/*
-Java Program to check for balanced parentheses in an expression using stack.
-Given an expression as string comprising of opening and closing characters
-of parentheses - (), curly braces - {} and square brackets - [], we need to 
-check whether symbols are balanced or not. 
-*/
-
-//Function to check whether two characters are opening 
-//and closing of same type. 
-public static boolean ArePair(char opening,char closing)
-{
-	if(opening == '(' && closing == ')') return true;
-	else if(opening == '{' && closing == '}') return true;
-	else if(opening == '[' && closing == ']') return true;
-	return false;
-}
-public static boolean AreParanthesesBalanced(String string)
-{
-	char[] exp=string.toCharArray();
-	Stack<Character>  S=new Stack<Character>();
-	for(int i =0;i<exp.length;i++)
-	{
-		if(exp[i] == '(' || exp[i] == '{' || exp[i] == '[')
-			S.push(exp[i]);
-		else if(exp[i] == ')' || exp[i] == '}' || exp[i] == ']')
-		{
-			if(S.empty() || !ArePair(S.peek(),exp[i]))
-				return false;
-			else
-				S.pop();  // Pair Found
-		}
-	}
-	return S.empty() ? true:false;
+// you can also use imports, for example:
+// import java.math.*;
+import java.util.Stack;
+class Solution {
+    public int solution(String S) {
+        // write your code in Java SE 7
+        Stack<Character> s=new Stack<Character>();
+        char[] c=S.toCharArray();
+        for(int i=0;i<c.length;i++){
+            if(c[i]=='(')
+            s.push(c[i]);
+            if(c[i]==')'){
+                if(s.empty() || !arePair(s.peek(),c[i]))
+                return 0;
+                else
+                s.pop();
+            }
+        }
+        return s.empty()? 1:0;
+    }
+    public boolean arePair(char a, char b){
+        if(a=='(' && b==')')
+        return true;
+        else
+        return false;
+    }
+    
 }
