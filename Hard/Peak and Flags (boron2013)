@@ -49,6 +49,15 @@ Elements of input arrays can be modified.
 
 
 Solution:
+
+Here is one solution
+
+find the peak array first
+use binary to find the flag number, start = 1, end = array.size(). make flag = (start + end) / 2;
+time O( nlgn).
+tips: pay attention to sf and ef , used flag
+
+
 // you can also use imports, for example:
 // import java.math.*;
 import java.util.ArrayList;
