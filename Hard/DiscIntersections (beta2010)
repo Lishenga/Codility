@@ -1,0 +1,90 @@
+Task description
+Given an array A of N integers, we draw N discs in a 2D plane such that the I-th disc is centered on (0,I) and has a radius of A[I]. We say that the J-th disc and K-th disc intersect if J ≠ K and J-th and K-th discs have at least one common point.
+Write a function:
+class Solution { public int solution(int[] A); }
+that, given an array A describing N discs as explained above, returns the number of pairs of intersecting discs. For example, given N=6 and:
+A[0] = 1  A[1] = 5  A[2] = 2 
+A[3] = 1  A[4] = 4  A[5] = 0  
+intersecting discs appear in eleven pairs of elements:
+0 and 1,
+0 and 2,
+0 and 4,
+1 and 2,
+1 and 3,
+1 and 4,
+1 and 5,
+2 and 3,
+2 and 4,
+3 and 4,
+4 and 5.
+so the function should return 11.
+The function should return −1 if the number of intersecting pairs exceeds 10,000,000.
+Assume that:
+N is an integer within the range [0..100,000];
+each element of array A is an integer within the range [0..2147483647].
+Complexity:
+expected worst-case time complexity is O(N*log(N));
+expected worst-case space complexity is O(N), beyond input storage (not counting the storage required for input arguments).
+Elements of input arrays can be modified.
+
+Solution:
+Attempt 1 - Brute Force
+Let’s first try to come up with a brute force solution – this is always a good start.
+Given array indices i,j (j>i), if the discs are located at (0,i) and (0,j) respectively, then the discs will intersect iff the following holds:
+j−i≤A[i]+A[j]
+
+Given this predicate, simply iterate over array A, and check for how many subsequent discs the above predicate holds. This gives us an O(n2) algorithm.
+Improving to O(NlogN)
+We can rewrite the above predicate:
+j−i≤A[i]+A[j]A[i]+i≥−(A[j]−j)
+
+Now we are getting closer to a solution. We see that the solution is dependent on a ≥ predicate where each side is a linear transformation of the input array A. We can proceed as follows:
+Produce two arrays containing A[i]+i and −(A[j]−j).
+Sort them - O(Nlog(N))
+Compute for how many pairs the above predicate holds.
+To do the last step above, simply go through array with sorted values A[i]+i, and for each value x, check how many values from the sorted array −(A[j]−j) are smaller than x. This can be done with binary search in O(log(N)).
+Crucially, we must subtract what was counted twice and any degenerate solutions – these where the predicate j−i≤A[i]+A[j] holds true since j−i≤0. To do this, subtract N∗(N+1)2 from the total.
+This leads to the following Java algorithm, which scores 100/100 on Codility:
+
+// you can also use imports, for example:
+// import java.math.*;
+import java.util.Arrays;
+class Solution {
+     public static int solution(int[] A){
+    int l = A.length;
+
+    long[] A1 = new long[l];
+    long[] A2 = new long[l];
+    
+    for(int i = 0; i < l; i++){
+      A1[i] = (long)A[i] + i;
+      A2[i] = -((long)A[i]-i);
+    }
+    
+    Arrays.sort(A1);
+    Arrays.sort(A2);
+    
+    long cnt = 0;
+    
+    for(int i = A.length - 1; i >= 0; i--){
+      int pos = Arrays.binarySearch(A2, A1[i]);
+      if(pos >= 0){
+        while(pos < A.length && A2[pos] == A1[i]){
+          pos++;
+        }
+        cnt += pos;
+      } else{ // element not there
+        int insertionPoint = -(pos+1);
+        cnt += insertionPoint;
+      }
+      
+    }
+    
+    long sub = (long)l*((long)l+1)/2;
+    cnt = cnt - sub;
+              
+    if(cnt > 1e7) return -1;
+    
+    return (int)cnt;
+  }
+}
