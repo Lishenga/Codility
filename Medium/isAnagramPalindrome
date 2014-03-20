@@ -1,0 +1,115 @@
+Determine if any anagram of a string can be a palindrome.
+
+The Problem : 
+
+      Given a string containing only lowercase alphabets, determine whether an anagram of this string can be a palindrome. Output YES if an anagram which is a palindrome exists and NO otherwise. The length of the string can vary between 1 and 100000, both inclusive.
+
+Examples :
+
+Input String : aab
+Output : YES
+Explanation : aba is an anagram which is a palindrome
+
+Input String : babb
+Output : NO
+Explanation : No anagram of "babb" exist which is a palindrome
+
+Input String : a
+Output : YES
+Explanation : a is itself a palindrome
+
+Input String :bbabaaa
+Output : YES
+Explanation aabbbaa is an anagram which is a palindrome
+
+
+The Solution : 
+
+      A brute force way of solving this would be to generate all anagrams of the given string and then check whether any of them is a palindrome. But a string of length n (of distinct characters) can have n! different anagrams. Thus this method is not feasible even for small values of n (5!=120, 10!=3628800). A faster solution is thus needed.
+
+      Lets look at an even length string. For this to be a palindrome the first half of the string must match the second half. So each characters in the first half of the string must also be present in the second half. Hence, there must be an even number of occurrences of each character in the string. (Note that here we say even occurrences of each character and not 2 occurrences. Why?. Consider the case where we have 4 occurrences of character 'a'. This means two of them can lie in the first half and the other two in the second half, hence an even number of occurrences is acceptable).
+
+      Now lets take the case of an odd length string. Here the middle character of the string can be anything. Only the former part of the string (before the middle character) must match the latter part(after the middle character). So the middle character does not need a matching character, but the rest of the characters must occur in pairs (i.e. each character other than the middle must occur an even number of times in the string).
+
+Now, for the problem at hand.
+
+Case 1: Even length string 
+    
+      If each character of the string occurs an even number of times then we can make a palindrome out of it by rearranging the characters. For each character in the first half there shall exist a matching one in the second half. So we just need to count the occurrence of each character. If each character occurs an even number of times we can print YES.
+
+Case 2: Odd length string
+
+      Here, in a palindrome, all characters must have a matching pair except the middle one. So each character must occur an even number of times except one. So in a random string if all characters except one occur an even number of times, then these characters can be arranged in the first and second halves of the string. Now for the character that occurs an odd number of times. Suppose it occurs 5 times. Then 4 occurrences of this can be included in the first and second halves of the palindrome and the remaining one occurrence will become the middle character.
+       Note that if, in a string, we had more than one character occurring an odd number of times the we could not have created a palindrome out of it.
+
+So the logic becomes :
+
+If string is of even length, check if all characters occur an even number of times, if they do print YES else print NO.
+
+If string is of odd length, check if all but one characters occur an even number of times, one character must occur odd number of times, if these conditions satisfy print YES else print NO.
+
+
+The Implementation:
+
+      Here we need to count the occurrence of only 26 lowercase alphabets. So take an array of length 26. The count of 'a' will stored at the zeroth positions, 'b' at the first position and so on. Initialize this array with 0's. Lets call this array a[].
+
+      Now a naive implementation would be to simply go through the string and increment the corresponding position in the array. At the end go through the array to check if the requirements defined in the logic are met. There is however a better solution where we need not traverse the array to get the solution.
+
+      We take a flag variable to indicate the number of characters which occur odd number of times in the string. Every time we encounter a character we shall toggle the corresponding position in the array. Since the initial value of the position was 0, the first time it is toggled, it will become 1. On the next toggle it will become zero. Hence, a value 1 indicates the first occurrence and a value zero indicates the second occurrence. So every time a position becomes 1 increment the flag, and every time it becomes zero decrement the flag.
+
+      So at any point during the traversal of the string the flag will indicate the number of characters whose occurrence count till this point is odd. Lets see this with an example.
+
+Lets take the string ababb. A dry run is shown in the following table
+
+Position   Character           array a[]                  flag
+   0                a           a[0]=1,others 0               1    (till this point a-odd)
+   1                b           a[1]=1,a[0]=1,others 0        2    (till this point a-odd, b-odd)
+   2                a           a[0]=0,a[1]=1,others 0        1    (till this point b-odd)
+   3                b           a[1]=0,others 0               0    (till this point none-odd)
+   4                b           a[1]=1,others 0               1    (till this point b-odd)
+ 
+
+The toggle can be implemented by using the XOR operator " ^ ".
+
+Now to display the result, the following steps are followed :
+
+1. Find length of string
+2. If even then if flag=0 print YES esle print NO
+3. If odd then if flag=1 print YES else print NO
+
+
+Java Code:
+
+public class AnagramPalindrome {
+public static void main(String[] args) {
+	String s="hannah";
+	char[] str=s.toCharArray();
+	System.out.println(isAnagramPalidrome(str));
+	
+}
+public static boolean isAnagramPalidrome(char[] str){
+	int[] a=new int[26];
+	int flag=0;
+	for(int i=0;i<str.length;i++){
+		a[str[i]-97]^=1;
+		if(a[str[i]-97]==1)
+			flag++;
+		else if(a[str[i]-97]==0)
+			flag--;
+		
+	}
+	if(str.length%2!=0){
+		if(flag!=0)
+			return true;
+		else
+			return false;
+	}
+	else{
+		if(flag==0)
+			return true;
+		else return false;
+	}
+}
+}
+
+
