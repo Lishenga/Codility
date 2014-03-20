@@ -1,5 +1,7 @@
 Determine if any anagram of a string can be a palindrome.
 
+Source: http://sleepingthreads.blogspot.com/2013/07/determine-if-any-anagram-of-string-can.html
+
 The Problem : 
 
       Given a string containing only lowercase alphabets, determine whether an anagram of this string can be a palindrome. Output YES if an anagram which is a palindrome exists and NO otherwise. The length of the string can vary between 1 and 100000, both inclusive.
