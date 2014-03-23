@@ -82,9 +82,16 @@ Now to display the result, the following steps are followed :
 
 Java Code:
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+
 public class AnagramPalindrome {
-public static void main(String[] args) {
-	String s="hannah";
+public static void main(String[] args) throws IOException {
+	BufferedReader rb=new BufferedReader(new InputStreamReader(System.in));
+	System.out.println("Enter the string");
+	String s=rb.readLine();
 	char[] str=s.toCharArray();
 	System.out.println(isAnagramPalidrome(str));
 	
@@ -100,18 +107,19 @@ public static boolean isAnagramPalidrome(char[] str){
 			flag--;
 		
 	}
-	if(str.length%2!=0){
-		if(flag!=0)
+	if(str.length%2!=0){ // odd length string
+		if(flag==1)
 			return true;
 		else
 			return false;
 	}
-	else{
-		if(flag==0)
+	else{                    // even length string
+		if(flag==0)     
 			return true;
 		else return false;
 	}
 }
 }
+
 
 
